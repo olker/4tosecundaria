@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Madrid - El Rey de Europa</title>
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #001a4f; /* Azul Real Madrid */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #febe10; /* Dorado Real Madrid */
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Secciones */
+        .section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        h2 {
+            color: #001a4f;
+            border-left: 5px solid #febe10;
+            padding-left: 10px;
+            margin-top: 0;
+        }
+
+        /* Diseño de Contenido (Flexbox) */
+        .content-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .image-container {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #001a4f;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .stats {
+            font-weight: bold;
+            color: #febe10;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>REAL MADRID C.F.</h1>
+        <p>El club más grande del mundo</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Sección Champions League -->
+        <div class="section">
+            <h2>UEFA Champions League</h2>
+            <div class="content-box">
+                <div class="text">
+                    <p>El Real Madrid es el dominador absoluto de Europa. Con su mística en las noches europeas, ha logrado una cifra inalcanzable para el resto.</p>
+                    <p class="stats">Títulos: 15 Copas de Europa</p>
+                </div>
+                <div class="image-container">
+                    <!-- He puesto una imagen de ejemplo, puedes cambiar el link -->
+                    <img src="el mejor.avif" alt="Champions League">
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Copas del Rey -->
+        <div class="section">
+            <h2>Copa del Rey</h2>
+            <div class="content-box">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=500" alt="Trofeo">
+                </div>
+                <div class="text">
+                    <p>Un torneo con mucha historia en España. El Real Madrid ha levantado este trofeo en numerosas ocasiones, demostrando su poderío en el formato de eliminatorias nacionales.</p>
+                    <p class="stats">Títulos: 20 Copas del Rey</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Mundial de Clubes -->
+        <div class="section">
+            <h2>Mundial de Clubes</h2>
+            <div class="content-box">
+                <div class="text">
+                    <p>Como rey de Europa, el Madrid ha conquistado el mundo repetidamente, venciendo a los campeones de cada continente en el Mundial de Clubes y la antigua Intercontinental.</p>
+                    <p class="stats">Títulos: 8 Mundiales / Intercontinentales</p>
+                </div>
+                <div class="image-container">
+                    <img src= "images.massiiii.jpg">
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Fan Page Real Madrid - ¡Hala Madrid y nada más!</p>
+    </footer>
+
+</body>
+</html>
+Detalles del diseño:
+Colores Oficiales: He usado el azul oscuro (#001a4f) y el dorado (#febe10) para darle esa identidad visual del club.
+
+Diseño Adaptable (Responsive): Gracias a flex-wrap, si abres la página en un móvil, las imágenes y los textos se pondrán uno debajo del otro de forma automática.
+
+Efectos: He añadido un pequeño efecto de "zoom" cuando pasas el ratón sobre las imágenes para que sea más interactivo.
+
+Imágenes: He utilizado enlaces de imágenes genéricas de fútbol (Unsplash). Para que quede perfecto, te recomiendo descargar fotos reales del club (el trofeo de la 15ª, el Bernabéu, etc.) y cambiar las rutas en el atributo src.
