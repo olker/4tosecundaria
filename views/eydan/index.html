@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mundial 2026 - Jugadores y Predicción</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #b8860b 0%, #8b0000 40%, #000000 100%);
+      color: #f2e7c7;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1, h2, h3 {
+      margin: 0;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #ffe48a;
+    }
+    p.lead {
+      margin: 8px auto 0;
+      max-width: 760px;
+      color: #fff2c9;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn-stats {
+      background: linear-gradient(135deg, #ffd700, #ff4500);
+      color: #111;
+    }
+    .btn-prediction {
+      background: linear-gradient(135deg, #000000, #4f3100);
+      color: #ffd700;
+      border: 1px solid #ffd700;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 0 auto 22px;
+      max-width: 780px;
+    }
+    .controls input,
+    .controls select {
+      min-width: 180px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s ease, transform 0.15s ease;
+    }
+    .controls input:focus,
+    .controls select:focus {
+      border-color: #ffd700;
+      transform: translateY(-1px);
+    }
+    .stats-summary {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 18px;
+      padding: 16px 18px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 215, 0, 0.22);
+      border-radius: 18px;
+      color: #f7ecd0;
+    }
+    .stats-summary div {
+      min-width: 170px;
+      font-size: 0.95rem;
+    }
+    .stats-summary strong {
+      color: #ffd700;
+    }
+    .player-card {
+      position: relative;
+      width: 220px;
+      min-height: 180px;
+      background: linear-gradient(135deg, rgba(255, 235, 156, 0.14), rgba(255, 255, 255, 0.08));
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.30);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+    }
+    .player-card::before {
+      content: "⚽";
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 2rem;
+      opacity: 0.18;
+    }
+    .player-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 34px rgba(0, 0, 0, 0.42);
+    }
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .player-card h3 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #111;
+    }
+    .player-card .stat {
+      margin: 4px 0;
+      font-size: 0.92rem;
+      color: #3f2f00;
+    }
+    .player-card .stat strong {
+      color: #000;
+    }
+    .player-card .card-action,
+    .team-button {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #111;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .player-card .card-action:hover,
+    .team-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    }
+    .field-container {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .field {
+      width: 760px;
+      max-width: 100%;
+      height: 420px;
+      background: linear-gradient(180deg, #0e5b1f 0%, #1d7a31 20%, #116128 60%, #0d4d1b 100%);
+      border: 4px solid #8ad17d;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+    }
+    .field::before,
+    .field::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .field::before {
+      width: 100%;
+      height: 4px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .field::after {
+      width: 82px;
+      height: 82px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 3px solid rgba(255,255,255,0.45);
+      background: transparent;
+    }
+    .field-slots {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .field-slot {
+      position: absolute;
+      width: 118px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #fff;
+      font-size: 0.74rem;
+      text-align: center;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.24);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .field-slot:hover {
+      transform: translate(-50%, -50%) scale(1.04);
+      background: rgba(255,255,255,0.25);
+    }
+    .field-slot.selected {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: #ffd700;
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+    .field-slot .slot-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: #f1f9e8;
+      font-size: 0.80rem;
+    }
+    .field-slot .slot-player {
+      display: block;
+      font-size: 0.74rem;
+      color: #e9f3d9;
+      line-height: 1.3;
+      min-height: 28px;
+    }
+    .field .field-lines {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .field .penalty-area {
+      position: absolute;
+      width: 174px;
+      height: 148px;
+      top: 42px;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      border-radius: 0 0 22px 22px;
+      background: transparent;
+    }
+    .field .penalty-area.left {
+      left: 18px;
+    }
+    .field .penalty-area.right {
+      right: 18px;
+    }
+    .field::before {
+      width: 100%;
+      height: 2px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.35);
+      content: "";
+    }
+    .field::after {
+      width: 90px;
+      height: 90px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 3px solid rgba(255,255,255,0.45);
+      background: transparent;
+      content: "";
+    }
+    .field .goal-area {
+      position: absolute;
+      width: 110px;
+      height: 200px;
+      border: 3px solid rgba(255, 215, 0, 0.45);
+      border-radius: 0 0 18px 18px;
+    }
+    .field .goal-area.left {
+      left: 12px;
+      top: 110px;
+    }
+    .field .goal-area.right {
+      right: 12px;
+      top: 110px;
+      border-radius: 0 0 18px 18px;
+    }
+    .field .box {
+      position: absolute;
+      width: 220px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid rgba(255, 215, 0, 0.24);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 0.95rem;
+      line-height: 1.3;
+      color: #fff;
+    }
+    .field .ball-icon {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff 0 18%, #000 20%, #fff 23%, #222 28%, #fff 35%, #222 42%, #fff 50%);
+      box-shadow: 0 0 12px rgba(255,255,255,0.18);
+      opacity: 0.85;
+    }
+    .lineup-panel {
+      margin-top: 48px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 215, 0, 0.24);
+      border-radius: 18px;
+      padding: 18px;
+      color: #fff;
+      max-width: 760px;
+      width: 100%;
+    }
+    .lineup-panel p {
+      margin: 0 0 12px;
+      color: #f2e7c7;
+    }
+    .lineup-panel label,
+    .lineup-panel select {
+      display: block;
+      width: 100%;
+    }
+    .lineup-panel select {
+      margin-top: 6px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      outline: none;
+    }
+    .lineup-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .lineup-slot {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.22);
+      min-height: 70px;
+    }
+    .lineup-slot strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #ffd700;
+    }
+    .assign-field-button {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .assign-field-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    }
+    .field .title {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 16px;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #ffd700;
+    }
+    .match-box {
+      position: relative;
+      width: 220px;
+      padding: 14px 12px 12px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.62);
+      border: 2px solid rgba(255, 215, 0, 0.22);
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
+    }
+    .match-box::before {
+      content: "⚽";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4rem;
+      color: #ffd700;
+      opacity: 0.95;
+    }
+    .match-stage {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #ffd700;
+    }
+    .match-extra {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #f2e7c7;
+      line-height: 1.4;
+    }
+    .team-list {
+      columns: 2;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      color: #fff2b4;
+    }
+    .team-list li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 22px;
+    }
+    .team-list li::before {
+      content: "⚽";
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 0.92rem;
+      color: #ffd700;
+      line-height: 1.1;
+    }
+    .prediction-box {
+      width: 100%;
+      max-width: 760px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 215, 0, 0.45);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      color: #fff2b0;
+    }
+    .prediction-box strong {
+      color: #ffd700;
+      font-size: 1.3rem;
+    }
+    option{
+      background-color: #1e0d0d;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mundial 2026</h1>
+    <p class="lead">Sitio profesional con 980 jugadores de la Copa, con nombres, estadísticas y selección. También incluye entrenadores, estadios y un campo con estilo de balón de fútbol.</p>
+    <div class="nav-buttons">
+      <a href="#estadisticas" class="btn btn-stats">Ir a estadísticas</a>
+      <a href="#prediccion" class="btn btn-prediction">Ir a predicción</a>
+    </div>
+    <div class="controls">
+      <input type="search" id="search-input" placeholder="Buscar jugador, selección o posición" aria-label="Buscar jugadores" />
+      <select class="pollo" id="team-select" aria-label="Filtrar por selección">
+        <option  value="">Todas las selecciones</option>
+      </select>
+      <select id="position-select" aria-label="Filtrar por posición">
+        <option value="">Todas las posiciones</option>
+      </select>
+    </div>
+  </header>
+
+  <section id="estadisticas">
+    <h2>Jugadores del Mundial 2026</h2>
+    <div class="stats-summary">
+      <div><strong id="total-players">0</strong> jugadores mostrados</div>
+      <div>Máximo goleador: <strong id="top-scorer">-</strong></div>
+      <div>Posición más común: <strong id="most-common-position">-</strong></div>
+    </div>
+    <div class="players-grid"></div>
+  </section>
+
+  <section class="field-container" id="prediccion">
+    <div class="field">
+      <div class="title">Campo 2D - partidos de eliminación</div>
+      <div class="field-slots">
+        <div class="field-slot" data-slot="att1" style="top: 14%; left: 32%;"><span class="slot-label">Delantero 1</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="att2" style="top: 14%; left: 50%;"><span class="slot-label">Delantero 2</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="att3" style="top: 14%; left: 68%;"><span class="slot-label">Delantero 3</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="mid1" style="top: 32%; left: 26%;"><span class="slot-label">Mediocampista 1</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="mid2" style="top: 34%; left: 50%;"><span class="slot-label">Mediocampista 2</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="mid3" style="top: 32%; left: 74%;"><span class="slot-label">Mediocampista 3</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="def1" style="top: 54%; left: 16%;"><span class="slot-label">Defensa 1</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="def2" style="top: 54%; left: 34%;"><span class="slot-label">Defensa 2</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="def3" style="top: 54%; left: 66%;"><span class="slot-label">Defensa 3</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="def4" style="top: 54%; left: 84%;"><span class="slot-label">Defensa 4</span><span class="slot-player">Vacío</span></div>
+        <div class="field-slot" data-slot="gk" style="top: 82%; left: 50%;"><span class="slot-label">Portero</span><span class="slot-player">Vacío</span></div>
+      </div>
+      <div class="ball-icon" style="left: 70px; top: 30px;"></div>
+      <div class="ball-icon" style="right: 70px; top: 90px;"></div>
+      <div class="ball-icon" style="left: 50%; top: 220px; transform: translateX(-50%);"></div>
+      <div class="box match-box" style="left: 16px; top: 60px;">
+        <div class="match-stage">Cuartos 1</div>
+        Brasil vs Argentina
+        <span class="match-extra">Estadio Azteca · DT: Fernando Diniz / Lionel Scaloni</span>
+      </div>
+      <div class="box match-box" style="left: 16px; top: 170px;">
+        <div class="match-stage">Cuartos 2</div>
+        Francia vs Inglaterra
+        <span class="match-extra">Rose Bowl · DT: Didier Deschamps / Gareth Southgate</span>
+      </div>
+      <div class="box match-box" style="right: 16px; top: 60px;">
+        <div class="match-stage">Cuartos 3</div>
+        España vs Alemania
+        <span class="match-extra">Allianz Arena · DT: Luis de la Fuente / Julian Nagelsmann</span>
+      </div>
+      <div class="box match-box" style="right: 16px; top: 170px;">
+        <div class="match-stage">Cuartos 4</div>
+        Portugal vs Croacia
+        <span class="match-extra">Lusail Stadium · DT: Roberto Martínez / Zlatko Dalić</span>
+      </div>
+      <div class="box match-box" style="left: calc(50% - 110px); top: 240px;">
+        <div class="match-stage">Semifinal 1</div>
+        Brasil vs Francia
+        <span class="match-extra">MetLife Stadium · DT: Fernando Diniz / Didier Deschamps</span>
+      </div>
+      <div class="box match-box" style="left: calc(50% - 110px); top: 310px;">
+        <div class="match-stage">Semifinal 2</div>
+        Alemania vs Portugal
+        <span class="match-extra">Wembley Stadium · DT: Julian Nagelsmann / Roberto Martínez</span>
+      </div>
+      <div class="box match-box" style="left: calc(50% - 110px); top: 375px; width: 260px;">
+        <div class="match-stage">Final</div>
+        Brasil vs Alemania
+        <span class="match-extra">Estadio Santiago Bernabéu · DT: Fernando Diniz / Julian Nagelsmann</span>
+      </div>
+    </div>
+    <div class="lineup-panel">
+      <p>Selecciona la posición en el campo y luego haz clic en "Asignar a campo" en un jugador para ubicarlo en la alineación.</p>
+      <label for="field-slot-select">Posición en la cancha</label>
+      <select id="field-slot-select" aria-label="Seleccionar posición en la cancha">
+        <option value="gk">Portero</option>
+        <option value="def1">Defensa 1</option>
+        <option value="def2">Defensa 2</option>
+        <option value="def3">Defensa 3</option>
+        <option value="def4">Defensa 4</option>
+        <option value="mid1">Mediocampista 1</option>
+        <option value="mid2">Mediocampista 2</option>
+        <option value="mid3">Mediocampista 3</option>
+        <option value="att1">Delantero 1</option>
+        <option value="att2">Delantero 2</option>
+        <option value="att3">Delantero 3</option>
+      </select>
+      <div class="lineup-slots" id="lineup-slots"></div>
+    </div>
+    <div class="prediction-box">
+      <h2>Predicción del Mundial 2026</h2>
+      <p>Ganador estimado:</p>
+      <p><strong>Brasil</strong> en el Estadio Santiago Bernabéu</p>
+      <p>Esta predicción usa las selecciones más fuertes, entrenadores y estadios de la fase eliminatoria.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selecciones y Entrenadores del Mundial 2026</h2>
+    <p class="lead">Todas las selecciones que llegarían a la fase final en esta predicción, con sus entrenadores respectivos.</p>
+    <ul class="team-list"></ul>
+  </section>
+
+  <script>
+    const teams = [
+      'Argentina', 'Brasil', 'Francia', 'Inglaterra', 'España', 'Alemania', 'Portugal', 'Croacia',
+      'Bélgica', 'Países Bajos', 'Italia', 'México', 'Estados Unidos', 'Canadá', 'Uruguay', 'Chile',
+      'Colombia', 'Senegal', 'Egipto', 'Japón', 'Corea del Sur', 'Australia', 'Costa Rica', 'Nigeria',
+      'Suiza', 'Suecia', 'Dinamarca', 'Polonia', 'Camerún', 'Ghana', 'Irán', 'Serbia', 'Noruega'
+    ];
+
+    const teamCoaches = {
+      Argentina: 'Lionel Scaloni',
+      Brasil: 'Fernando Diniz',
+      Francia: 'Didier Deschamps',
+      Inglaterra: 'Gareth Southgate',
+      España: 'Luis de la Fuente',
+      Alemania: 'Julian Nagelsmann',
+      Portugal: 'Roberto Martínez',
+      Croacia: 'Zlatko Dalić',
+      Bélgica: 'Domenico Tedesco',
+      'Países Bajos': 'Ronald Koeman',
+      Italia: 'Luciano Spalletti',
+      México: 'Jaime Lozano',
+      'Estados Unidos': 'Gregg Berhalter',
+      Canadá: 'Jesse Marsch',
+      Uruguay: 'Marcelo Bielsa',
+      Chile: 'Eduardo Berizzo',
+      Colombia: 'Néstor Lorenzo',
+      Senegal: 'Aliou Cissé',
+      Egipto: 'Héctor Cúper',
+      Japón: 'Hajime Moriyasu',
+      'Corea del Sur': 'Jürgen Klinsmann',
+      Australia: 'Graham Arnold',
+      'Costa Rica': 'Gustavo Alfaro',
+      Nigeria: 'Finidi George',
+      Suiza: 'Murat Yakin',
+      Suecia: 'Janne Andersson',
+      Dinamarca: 'Kasper Hjulmand',
+      Polonia: 'Fernando Santos',
+      Camerún: 'Rigobert Song',
+      Ghana: 'Otto Addo',
+      Irán: 'Carlos Queiroz',
+      Serbia: 'Dragan Stojković',
+      Noruega: 'Ståle Solbakken'
+    };
+
+    const basePlayers = [
+      { name: 'Lionel Messi', team: 'Argentina', position: 'Delantero', height: '1.70 m', weight: '72 kg', goals: 25, goalPct: 65 },
+      { name: 'Julián Álvarez', team: 'Argentina', position: 'Delantero', height: '1.70 m', weight: '68 kg', goals: 22, goalPct: 60 },
+      { name: 'Lautaro Martínez', team: 'Argentina', position: 'Delantero', height: '1.74 m', weight: '78 kg', goals: 20, goalPct: 58 },
+      { name: 'Emiliano Martínez', team: 'Argentina', position: 'Portero', height: '1.95 m', weight: '90 kg', goals: 0, goalPct: 0 },
+      { name: 'Enzo Fernández', team: 'Argentina', position: 'Mediocampista', height: '1.78 m', weight: '75 kg', goals: 8, goalPct: 18 },
+      { name: 'Neymar', team: 'Brasil', position: 'Delantero', height: '1.75 m', weight: '68 kg', goals: 27, goalPct: 55 },
+      { name: 'Vinícius Jr.', team: 'Brasil', position: 'Delantero', height: '1.76 m', weight: '70 kg', goals: 25, goalPct: 53 },
+      { name: 'Rodrygo', team: 'Brasil', position: 'Delantero', height: '1.77 m', weight: '66 kg', goals: 22, goalPct: 51 },
+      { name: 'Alisson', team: 'Brasil', position: 'Portero', height: '1.91 m', weight: '91 kg', goals: 0, goalPct: 0 },
+      { name: 'Casemiro', team: 'Brasil', position: 'Mediocampista', height: '1.85 m', weight: '86 kg', goals: 5, goalPct: 10 },
+      { name: 'Kylian Mbappé', team: 'Francia', position: 'Delantero', height: '1.78 m', weight: '73 kg', goals: 33, goalPct: 60 },
+      { name: 'Antoine Griezmann', team: 'Francia', position: 'Delantero', height: '1.76 m', weight: '72 kg', goals: 24, goalPct: 50 },
+      { name: 'Aurélien Tchouaméni', team: 'Francia', position: 'Mediocampista', height: '1.87 m', weight: '82 kg', goals: 6, goalPct: 15 },
+      { name: 'Hugo Lloris', team: 'Francia', position: 'Portero', height: '1.88 m', weight: '80 kg', goals: 0, goalPct: 0 },
+      { name: 'Jules Koundé', team: 'Francia', position: 'Defensa', height: '1.80 m', weight: '74 kg', goals: 2, goalPct: 5 },
+      { name: 'Harry Kane', team: 'Inglaterra', position: 'Delantero', height: '1.88 m', weight: '86 kg', goals: 31, goalPct: 57 },
+      { name: 'Phil Foden', team: 'Inglaterra', position: 'Delantero', height: '1.70 m', weight: '68 kg', goals: 20, goalPct: 49 },
+      { name: 'Jude Bellingham', team: 'Inglaterra', position: 'Mediocampista', height: '1.86 m', weight: '79 kg', goals: 10, goalPct: 25 },
+      { name: 'Jordan Pickford', team: 'Inglaterra', position: 'Portero', height: '1.88 m', weight: '83 kg', goals: 0, goalPct: 0 },
+      { name: 'Kyle Walker', team: 'Inglaterra', position: 'Defensa', height: '1.78 m', weight: '70 kg', goals: 1, goalPct: 2 },
+      { name: 'Pedri', team: 'España', position: 'Mediocampista', height: '1.74 m', weight: '62 kg', goals: 9, goalPct: 22 },
+      { name: 'Álvaro Morata', team: 'España', position: 'Delantero', height: '1.90 m', weight: '85 kg', goals: 18, goalPct: 46 },
+      { name: 'Gavi', team: 'España', position: 'Mediocampista', height: '1.73 m', weight: '65 kg', goals: 7, goalPct: 19 },
+      { name: 'Unai Simón', team: 'España', position: 'Portero', height: '1.93 m', weight: '88 kg', goals: 0, goalPct: 0 },
+      { name: 'Dani Carvajal', team: 'España', position: 'Defensa', height: '1.73 m', weight: '72 kg', goals: 1, goalPct: 2 },
+      { name: 'Kevin De Bruyne', team: 'Bélgica', position: 'Mediocampista', height: '1.81 m', weight: '70 kg', goals: 11, goalPct: 30 },
+      { name: 'Romelu Lukaku', team: 'Bélgica', position: 'Delantero', height: '1.91 m', weight: '94 kg', goals: 28, goalPct: 55 },
+      { name: 'Thibaut Courtois', team: 'Bélgica', position: 'Portero', height: '1.99 m', weight: '96 kg', goals: 0, goalPct: 0 },
+      { name: 'Eden Hazard', team: 'Bélgica', position: 'Delantero', height: '1.75 m', weight: '74 kg', goals: 10, goalPct: 33 },
+      { name: 'Axel Witsel', team: 'Bélgica', position: 'Mediocampista', height: '1.86 m', weight: '80 kg', goals: 4, goalPct: 12 },
+      { name: 'Manuel Neuer', team: 'Alemania', position: 'Portero', height: '1.93 m', weight: '93 kg', goals: 0, goalPct: 0 },
+      { name: 'Joshua Kimmich', team: 'Alemania', position: 'Mediocampista', height: '1.77 m', weight: '72 kg', goals: 8, goalPct: 20 },
+      { name: 'Kai Havertz', team: 'Alemania', position: 'Delantero', height: '1.89 m', weight: '84 kg', goals: 15, goalPct: 46 },
+      { name: 'Antonio Rüdiger', team: 'Alemania', position: 'Defensa', height: '1.90 m', weight: '89 kg', goals: 2, goalPct: 5 },
+      { name: 'Ilkay Gündogan', team: 'Alemania', position: 'Mediocampista', height: '1.80 m', weight: '75 kg', goals: 6, goalPct: 18 },
+      { name: 'Cristiano Ronaldo', team: 'Portugal', position: 'Delantero', height: '1.87 m', weight: '83 kg', goals: 30, goalPct: 58 },
+      { name: 'Bruno Fernandes', team: 'Portugal', position: 'Mediocampista', height: '1.79 m', weight: '69 kg', goals: 12, goalPct: 28 },
+      { name: 'Pepe', team: 'Portugal', position: 'Defensa', height: '1.88 m', weight: '82 kg', goals: 1, goalPct: 3 },
+      { name: 'Diogo Costa', team: 'Portugal', position: 'Portero', height: '1.88 m', weight: '81 kg', goals: 0, goalPct: 0 },
+      { name: 'João Félix', team: 'Portugal', position: 'Delantero', height: '1.81 m', weight: '76 kg', goals: 18, goalPct: 46 },
+      { name: 'Luka Modrić', team: 'Croacia', position: 'Mediocampista', height: '1.72 m', weight: '66 kg', goals: 7, goalPct: 19 },
+      { name: 'Ivan Perišić', team: 'Croacia', position: 'Delantero', height: '1.86 m', weight: '78 kg', goals: 13, goalPct: 40 },
+      { name: 'Dominik Livaković', team: 'Croacia', position: 'Portero', height: '1.94 m', weight: '88 kg', goals: 0, goalPct: 0 },
+      { name: 'Joško Gvardiol', team: 'Croacia', position: 'Defensa', height: '1.92 m', weight: '85 kg', goals: 3, goalPct: 7 },
+      { name: 'Marcelo Brozović', team: 'Croacia', position: 'Mediocampista', height: '1.81 m', weight: '78 kg', goals: 5, goalPct: 16 },
+      { name: 'Erling Haaland', team: 'Noruega', position: 'Delantero', height: '1.94 m', weight: '94 kg', goals: 35, goalPct: 62 },
+      { name: 'Martin Ødegaard', team: 'Noruega', position: 'Mediocampista', height: '1.78 m', weight: '75 kg', goals: 10, goalPct: 22 },
+      { name: 'Stefan Ortega', team: 'Noruega', position: 'Portero', height: '1.89 m', weight: '86 kg', goals: 0, goalPct: 0 },
+      { name: 'Alexander Sørloth', team: 'Noruega', position: 'Delantero', height: '1.95 m', weight: '87 kg', goals: 17, goalPct: 50 },
+      { name: 'Andreas Christensen', team: 'Noruega', position: 'Defensa', height: '1.87 m', weight: '78 kg', goals: 2, goalPct: 5 }
+    ];
+
+    const namePrefixes = ['Álvaro', 'Diego', 'Miguel', 'Hugo', 'Samuel', 'Óscar', 'Andrés', 'Carlos', 'Pedro', 'José', 'Mateo', 'Iván', 'Raúl', 'Nicolás', 'Santiago'];
+    const nameSuffixes = ['García', 'Pérez', 'López', 'Martínez', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Romero', 'Díaz', 'Morales', 'Gómez', 'Ortiz', 'Ramos', 'Vargas'];
+
+    function createPlayer(index) {
+      const positionOptions = ['Delantero', 'Mediocampista', 'Defensa', 'Portero'];
+      const team = teams[(index - 1) % teams.length];
+      const position = positionOptions[(index - 1) % positionOptions.length];
+      const heightValue = 1.70 + ((index * 7) % 30) * 0.01;
+      const weightValue = 66 + ((index * 3) % 30);
+      const goals = position === 'Portero' ? 0 : 3 + ((index * 5) % 29);
+      const goalPct = position === 'Portero' ? 0 : Math.max(8, Math.min(70, Math.round((goals / (30 + (index % 5))) * 100)));
+      const name = `${namePrefixes[(index - 1) % namePrefixes.length]} ${nameSuffixes[(index - 1) % nameSuffixes.length]} #${index}`;
+      return {
+        name,
+        team,
+        position,
+        height: `${heightValue.toFixed(2)} m`,
+        weight: `${weightValue} kg`,
+        goals,
+        goalPct,
+      };
+    }
+
+    const players = [
+      ...basePlayers,
+      ...Array.from({ length: 980 - basePlayers.length }, (_, i) => createPlayer(i + basePlayers.length + 1))
+    ];
+
+    const grid = document.querySelector('.players-grid');
+    const searchInput = document.getElementById('search-input');
+    const teamSelect = document.getElementById('team-select');
+    const positionSelect = document.getElementById('position-select');
+    const totalPlayersText = document.getElementById('total-players');
+    const topScorerText = document.getElementById('top-scorer');
+    const mostCommonPositionText = document.getElementById('most-common-position');
+    const fieldSlotSelect = document.getElementById('field-slot-select');
+    const lineupSlotsContainer = document.getElementById('lineup-slots');
+    const fieldSlots = [
+      { id: 'gk', label: 'Portero' },
+      { id: 'def1', label: 'Defensa 1' },
+      { id: 'def2', label: 'Defensa 2' },
+      { id: 'def3', label: 'Defensa 3' },
+      { id: 'def4', label: 'Defensa 4' },
+      { id: 'mid1', label: 'Mediocampista 1' },
+      { id: 'mid2', label: 'Mediocampista 2' },
+      { id: 'mid3', label: 'Mediocampista 3' },
+      { id: 'att1', label: 'Delantero 1' },
+      { id: 'att2', label: 'Delantero 2' },
+      { id: 'att3', label: 'Delantero 3' }
+    ];
+    const lineup = {};
+
+    const positions = [...new Set(players.map((player) => player.position))].sort();
+
+    function setFilterOptions() {
+      teams.forEach((team) => {
+        const option = document.createElement('option');
+        option.value = team;
+        option.textContent = team;
+        teamSelect.appendChild(option);
+      });
+      positions.forEach((position) => {
+        const option = document.createElement('option');
+        option.value = position;
+        option.textContent = position;
+        positionSelect.appendChild(option);
+      });
+    }
+
+    function updateSummary(filteredPlayers) {
+      totalPlayersText.textContent = filteredPlayers.length;
+      if (filteredPlayers.length === 0) {
+        topScorerText.textContent = 'Ninguno';
+        mostCommonPositionText.textContent = '-';
+        return;
+      }
+      const topScorer = filteredPlayers.reduce((best, player) => (player.goals > best.goals ? player : best), filteredPlayers[0]);
+      const positionCount = filteredPlayers.reduce((acc, player) => {
+        acc[player.position] = (acc[player.position] || 0) + 1;
+        return acc;
+      }, {});
+      const mostCommon = Object.keys(positionCount).sort((a, b) => positionCount[b] - positionCount[a])[0];
+      topScorerText.textContent = `${topScorer.name} (${topScorer.goals} goles)`;
+      mostCommonPositionText.textContent = mostCommon;
+    }
+
+    function renderPlayers() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const selectedTeam = teamSelect.value;
+      const selectedPosition = positionSelect.value;
+      grid.innerHTML = '';
+
+      const filteredPlayers = players.filter((player) => {
+        const info = `${player.name} ${player.team} ${player.position}`.toLowerCase();
+        return (
+          (!searchValue || info.includes(searchValue)) &&
+          (!selectedTeam || player.team === selectedTeam) &&
+          (!selectedPosition || player.position === selectedPosition)
+        );
+      });
+
+      if (filteredPlayers.length === 0) {
+        const emptyCard = document.createElement('div');
+        emptyCard.className = 'player-card';
+        emptyCard.innerHTML = '<h3>No se encontraron resultados</h3><p class="stat">Cambia los filtros o busca otro jugador.</p>';
+        grid.appendChild(emptyCard);
+      } else {
+        filteredPlayers.forEach((player) => {
+          const card = document.createElement('div');
+          card.className = 'player-card';
+          card.innerHTML = `
+            <h3>${player.name}</h3>
+            <div class="stat"><strong>Selección:</strong> ${player.team}</div>
+            <div class="stat"><strong>Posición:</strong> ${player.position}</div>
+            <div class="stat"><strong>Altura:</strong> ${player.height}</div>
+            <div class="stat"><strong>Peso:</strong> ${player.weight}</div>
+            <div class="stat"><strong>Goles:</strong> ${player.goals}</div>
+            <div class="stat"><strong>% de gol:</strong> ${player.goalPct}%</div>
+            <button class="assign-field-button" type="button">Asignar a campo</button>
+            <button class="card-action team-filter-button" type="button" data-team="${player.team}">Ver selección</button>
+          `;
+          grid.appendChild(card);
+          const assignButton = card.querySelector('.assign-field-button');
+          const teamButton = card.querySelector('.team-filter-button');
+          if (assignButton) {
+            assignButton.addEventListener('click', () => {
+              assignPlayerToField(player);
+            });
+          }
+          if (teamButton) {
+            teamButton.addEventListener('click', () => {
+              teamSelect.value = player.team;
+              renderPlayers();
+              grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          }
+        });
+      }
+
+      updateSummary(filteredPlayers);
+    }
+
+    function renderLineupSlots() {
+      lineupSlotsContainer.innerHTML = '';
+      fieldSlots.forEach((slot) => {
+        const slotElement = document.createElement('div');
+        slotElement.className = 'lineup-slot';
+        const playerAssigned = lineup[slot.id];
+        slotElement.innerHTML = `
+          <strong>${slot.label}</strong>
+          <span>${playerAssigned ? playerAssigned.name : 'Vacío'}</span>
+        `;
+        lineupSlotsContainer.appendChild(slotElement);
+      });
+      updateFieldSlots();
+    }
+
+    function updateFieldSlots() {
+      const selectedSlotId = fieldSlotSelect ? fieldSlotSelect.value : '';
+      document.querySelectorAll('.field-slot').forEach((slotElement) => {
+        const slotId = slotElement.dataset.slot;
+        const playerAssigned = lineup[slotId];
+        const playerName = playerAssigned ? playerAssigned.name : 'Vacío';
+        slotElement.querySelector('.slot-player').textContent = playerName;
+        slotElement.classList.toggle('selected', selectedSlotId === slotId);
+        if (!slotElement.dataset.clickAdded) {
+          slotElement.addEventListener('click', () => {
+            fieldSlotSelect.value = slotId;
+            updateFieldSlots();
+          });
+          slotElement.dataset.clickAdded = 'true';
+        }
+      });
+    }
+
+    function assignPlayerToField(player) {
+      const selectedSlot = fieldSlotSelect ? fieldSlotSelect.value : fieldSlots[0].id;
+      lineup[selectedSlot] = player;
+      renderLineupSlots();
+    }
+
+    setFilterOptions();
+    renderPlayers();
+    renderLineupSlots();
+
+    [searchInput, teamSelect, positionSelect].forEach((element) => {
+      element.addEventListener('input', renderPlayers);
+      element.addEventListener('change', renderPlayers);
+    });
+
+    if (fieldSlotSelect) {
+      fieldSlotSelect.addEventListener('change', updateFieldSlots);
+    }
+
+    const teamList = document.querySelector('.team-list');
+    teams.forEach((team) => {
+      const li = document.createElement('li');
+      const coach = teamCoaches[team] || 'Entrenador por definir';
+      li.innerHTML = `
+        <span>${team} - Entrenador: ${coach}</span>
+        <button class="team-button" type="button" data-team="${team}">Ver jugadores</button>
+      `;
+      const button = li.querySelector('.team-button');
+      if (button) {
+        button.addEventListener('click', () => {
+          teamSelect.value = team;
+          renderPlayers();
+          grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+      teamList.appendChild(li);
+    });
+  </script>
+</body>
+</html>

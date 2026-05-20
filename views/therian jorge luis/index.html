@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>F1 Official Race Control</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Orbitron',sans-serif;
+    background:#060b16;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* FONDO */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at top left,#ff000022,transparent 35%),
+    radial-gradient(circle at bottom right,#0044ff22,transparent 35%);
+    z-index:-1;
+}
+
+/* HEADER */
+
+header{
+    background:linear-gradient(90deg,#111,#b30000);
+    padding:18px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid red;
+    box-shadow:0 0 20px rgba(255,0,0,0.4);
+}
+
+header h1{
+    font-size:2rem;
+    letter-spacing:3px;
+}
+
+.status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.live{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:red;
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.4);}
+    100%{transform:scale(1);}
+}
+
+/* LAYOUT */
+
+.container{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    background:#0c1324;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:20px;
+}
+
+.sidebar h2{
+    margin-bottom:20px;
+    color:#ff4040;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.menu button{
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#111827;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:bold;
+    text-align:left;
+    font-family:'Orbitron',sans-serif;
+}
+
+.menu button:hover{
+    background:#ff0000;
+    transform:translateX(5px);
+    box-shadow:0 0 15px red;
+}
+
+/* CONTENT */
+
+.content{
+    padding:25px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+
+.card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:20px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+    animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.card h3{
+    margin-bottom:20px;
+    color:#ff4b4b;
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+}
+
+table tr:hover{
+    background:rgba(255,0,0,0.08);
+}
+
+/* PILOT BUTTON */
+
+.pilot-btn{
+    background:none;
+    border:none;
+    color:#4db8ff;
+    font-family:'Orbitron',sans-serif;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.pilot-btn:hover{
+    color:#ff4040;
+    transform:scale(1.08);
+    text-shadow:0 0 10px red;
+}
+
+/* SPEEDOMETER */
+
+.speedometer{
+    width:240px;
+    height:240px;
+    border-radius:50%;
+    margin:auto;
+    position:relative;
+    background:
+    conic-gradient(
+        #00ff00 0deg,
+        #ffff00 180deg,
+        #ff0000 300deg
+    );
+    box-shadow:0 0 25px rgba(255,0,0,0.4);
+}
+
+.inner{
+    position:absolute;
+    inset:20px;
+    border-radius:50%;
+    background:#060b16;
+}
+
+.needle{
+    position:absolute;
+    width:6px;
+    height:90px;
+    background:white;
+    left:50%;
+    bottom:50%;
+    transform-origin:bottom;
+    transform:translateX(-50%) rotate(0deg);
+    border-radius:10px;
+    transition:1s;
+}
+
+.center-dot{
+    position:absolute;
+    width:18px;
+    height:18px;
+    background:white;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.speed-value{
+    text-align:center;
+    margin-top:20px;
+    font-size:2rem;
+}
+
+/* TRACK */
+
+.track{
+    width:100%;
+    height:170px;
+    background:#151515;
+    border-radius:20px;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #333;
+}
+
+.track::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:4px;
+    background:white;
+    top:50%;
+}
+
+.car{
+    width:80px;
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    animation:race 5s linear infinite;
+}
+
+@keyframes race{
+    0%{left:-100px;}
+    100%{left:110%;}
+}
+
+/* TELEMETRY */
+
+.telemetry{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.telemetry-box{
+    background:#111827;
+    padding:18px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.telemetry-box h4{
+    color:#ff4040;
+    margin-bottom:10px;
+}
+
+/* MODAL PILOT */
+
+.pilot-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.pilot-content{
+    width:550px;
+    max-width:92%;
+    background:#0f172a;
+    border-radius:25px;
+    padding:30px;
+    border:2px solid rgba(255,255,255,0.08);
+    box-shadow:0 0 40px rgba(255,0,0,0.4);
+    position:relative;
+    text-align:center;
+}
+
+.pilot-content img{
+    width:180px;
+    border-radius:20px;
+    border:4px solid red;
+    margin-bottom:20px;
+}
+
+.pilot-content h2{
+    color:#ff4040;
+    margin-bottom:20px;
+}
+
+.pilot-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.pilot-box{
+    background:#111827;
+    padding:15px;
+    border-radius:15px;
+}
+
+.pilot-box h4{
+    color:#ff4040;
+    margin-bottom:8px;
+}
+
+.close-pilot{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:35px;
+    color:white;
+    cursor:pointer;
+}
+
+/* ENANITO IA */
+
+#f1Assistant{
+    position:fixed;
+    bottom:20px;
+    left:-250px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    z-index:999999;
+    animation:walkAssistant 35s linear infinite;
+}
+
+@keyframes walkAssistant{
+    0%{
+        left:-250px;
+    }
+    100%{
+        left:110%;
+    }
+}
+
+#assistantCharacter{
+    width:120px;
+    animation:bounceAssistant 1s infinite;
+    cursor:pointer;
+}
+
+@keyframes bounceAssistant{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+#assistantBubble{
+    min-width:250px;
+    max-width:320px;
+    background:#111827;
+    border:2px solid red;
+    padding:18px;
+    border-radius:20px;
+    font-size:14px;
+    box-shadow:0 0 20px rgba(255,0,0,0.4);
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#777;
+}
+
+@media(max-width:900px){
+
+    .container{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🏎 F1 OFFICIAL RACE CONTROL</h1>
+
+<div class="status">
+<div class="live"></div>
+<span>LIVE SESSION</span>
+</div>
+
+</header>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<h2>CONTROL MENU</h2>
+
+<div class="menu">
+
+<button onclick="boostSpeed()">⚡ Boost Speed</button>
+
+<button onclick="toggleRace()">🏁 Start / Stop Race</button>
+
+<button onclick="changeTheme()">🎨 Change Theme</button>
+
+<button onclick="nightMode()">🌙 Night Mode</button>
+
+<button onclick="simulatePitstop()">🛞 Pit Stop</button>
+
+<button onclick="activateDRS()">📡 Activate DRS</button>
+
+<button onclick="safetyCar()">🚨 Safety Car</button>
+
+</div>
+
+</aside>
+
+<!-- CONTENT -->
+
+<main class="content">
+
+<!-- LEADERBOARD -->
+
+<div class="card">
+
+<h3>OFFICIAL LEADERBOARD</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>POS</th>
+<th>PILOT</th>
+<th>TEAM</th>
+<th>LAPS</th>
+<th>TIME</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>1</td>
+<td>
+
+<button class="pilot-btn"
+onclick="showPilot(
+'Max Verstappen',
+'Red Bull Racing',
+'Netherlands',
+'3',
+'61',
+'1.81m',
+'78kg',
+'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/2024Drivers/verstappen'
+)">
+Max Verstappen
+</button>
+
+</td>
+<td>Red Bull</td>
+<td>58</td>
+<td>1:31:12</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>
+
+<button class="pilot-btn"
+onclick="showPilot(
+'Charles Leclerc',
+'Ferrari',
+'Monaco',
+'0',
+'26',
+'1.80m',
+'69kg',
+'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/2024Drivers/leclerc'
+)">
+Charles Leclerc
+</button>
+
+</td>
+<td>Ferrari</td>
+<td>58</td>
+<td>+2.8</td>
+</tr>
+
+<tr>
+<td>3</td>
+<td>
+
+<button class="pilot-btn"
+onclick="showPilot(
+'Lando Norris',
+'McLaren',
+'United Kingdom',
+'0',
+'24',
+'1.70m',
+'68kg',
+'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/2024Drivers/norris'
+)">
+Lando Norris
+</button>
+
+</td>
+<td>McLaren</td>
+<td>58</td>
+<td>+5.2</td>
+</tr>
+
+<tr>
+<td>4</td>
+<td>
+
+<button class="pilot-btn"
+onclick="showPilot(
+'Lewis Hamilton',
+'Mercedes',
+'United Kingdom',
+'7',
+'39',
+'1.74m',
+'73kg',
+'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/2024Drivers/hamilton'
+)">
+Lewis Hamilton
+</button>
+
+</td>
+<td>Mercedes</td>
+<td>58</td>
+<td>+8.1</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- SPEED -->
+
+<div class="card">
+
+<h3>REAL TIME TELEMETRY</h3>
+
+<div class="speedometer">
+
+<div class="inner"></div>
+
+<div class="needle" id="needle"></div>
+
+<div class="center-dot"></div>
+
+</div>
+
+<div class="speed-value">
+<span id="speed">210</span> KM/H
+</div>
+
+</div>
+
+<!-- TRACK -->
+
+<div class="card">
+
+<h3>TRACK SIMULATION</h3>
+
+<div class="track">
+
+<img
+class="car"
+id="car"
+src="https://cdn-icons-png.flaticon.com/512/744/744465.png">
+
+</div>
+
+</div>
+
+<!-- TELEMETRY -->
+
+<div class="card">
+
+<h3>FIA DATA CENTER</h3>
+
+<div class="telemetry">
+
+<div class="telemetry-box">
+<h4>Temperature</h4>
+<p id="temp">31°C</p>
+</div>
+
+<div class="telemetry-box">
+<h4>Fuel</h4>
+<p id="fuel">76%</p>
+</div>
+
+<div class="telemetry-box">
+<h4>Tyres</h4>
+<p id="tyres">SOFT</p>
+</div>
+
+<div class="telemetry-box">
+<h4>DRS</h4>
+<p id="drs">ACTIVE</p>
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<!-- MODAL PILOT -->
+
+<div class="pilot-modal" id="pilotModal">
+
+<div class="pilot-content">
+
+<span class="close-pilot"
+onclick="closePilot()">&times;</span>
+
+<img id="pilotImage">
+
+<h2 id="pilotName"></h2>
+
+<div class="pilot-grid">
+
+<div class="pilot-box">
+<h4>TEAM</h4>
+<p id="pilotTeam"></p>
+</div>
+
+<div class="pilot-box">
+<h4>COUNTRY</h4>
+<p id="pilotCountry"></p>
+</div>
+
+<div class="pilot-box">
+<h4>WORLD TITLES</h4>
+<p id="pilotTitles"></p>
+</div>
+
+<div class="pilot-box">
+<h4>AGE</h4>
+<p id="pilotAge"></p>
+</div>
+
+<div class="pilot-box">
+<h4>HEIGHT</h4>
+<p id="pilotHeight"></p>
+</div>
+
+<div class="pilot-box">
+<h4>WEIGHT</h4>
+<p id="pilotWeight"></p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ENANITO IA -->
+
+<div id="f1Assistant">
+
+<img
+id="assistantCharacter"
+src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+
+<div id="assistantBubble">
+
+👋 Bienvenido al F1 Race Control.
+
+</div>
+
+</div>
+
+<footer>
+F1 Official Interactive Dashboard © 2026
+</footer>
+
+<script>
+
+/* SPEED */
+
+let speed = 210;
+
+const speedDisplay =
+document.getElementById("speed");
+
+const needle =
+document.getElementById("needle");
+
+function updateSpeedometer(){
+
+    speedDisplay.innerText = speed;
+
+    let rotation =
+    (speed / 350) * 270 - 135;
+
+    needle.style.transform =
+    `translateX(-50%) rotate(${rotation}deg)`;
+}
+
+updateSpeedometer();
+
+/* BUTTONS */
+
+function boostSpeed(){
+
+    speed += 20;
+
+    if(speed > 350){
+        speed = 350;
+    }
+
+    updateSpeedometer();
+}
+
+function toggleRace(){
+
+    const car =
+    document.getElementById("car");
+
+    if(car.style.animationPlayState === "paused"){
+
+        car.style.animationPlayState = "running";
+
+    }else{
+
+        car.style.animationPlayState = "paused";
+    }
+}
+
+function changeTheme(){
+
+    document.body.style.background =
+    "#180000";
+}
+
+function nightMode(){
+
+    document.body.style.filter =
+    "brightness(0.7)";
+}
+
+function activateDRS(){
+
+    document.getElementById("drs")
+    .innerText = "ENABLED";
+}
+
+function safetyCar(){
+
+    alert("🚨 SAFETY CAR DEPLOYED");
+}
+
+/* PIT STOP */
+
+function simulatePitstop(){
+
+    const pitCrews = {
+
+        "Max Verstappen":{
+            team:"Red Bull Racing",
+            crew:"22 Mechanics",
+            time:"2.1s",
+            tyres:"SOFT"
+        },
+
+        "Charles Leclerc":{
+            team:"Ferrari",
+            crew:"21 Mechanics",
+            time:"2.4s",
+            tyres:"MEDIUM"
+        },
+
+        "Lando Norris":{
+            team:"McLaren",
+            crew:"20 Mechanics",
+            time:"2.3s",
+            tyres:"HARD"
+        },
+
+        "Lewis Hamilton":{
+            team:"Mercedes",
+            crew:"23 Mechanics",
+            time:"2.2s",
+            tyres:"SOFT"
+        }
+    };
+
+    const pilots =
+    Object.keys(pitCrews);
+
+    const selectedPilot =
+    pilots[Math.floor(Math.random()*pilots.length)];
+
+    const data =
+    pitCrews[selectedPilot];
+
+    alert(
+`🛞 PIT STOP COMPLETED
+
+Pilot: ${selectedPilot}
+
+Team: ${data.team}
+
+Pit Crew: ${data.crew}
+
+Stop Time: ${data.time}
+
+New Tyres: ${data.tyres}`
+    );
+}
+
+/* PILOT INFO */
+
+function showPilot(
+name,
+team,
+country,
+titles,
+age,
+height,
+weight,
+image
+){
+
+    document.getElementById("pilotName")
+    .innerText = name;
+
+    document.getElementById("pilotTeam")
+    .innerText = team;
+
+    document.getElementById("pilotCountry")
+    .innerText = country;
+
+    document.getElementById("pilotTitles")
+    .innerText = titles;
+
+    document.getElementById("pilotAge")
+    .innerText = age + " years";
+
+    document.getElementById("pilotHeight")
+    .innerText = height;
+
+    document.getElementById("pilotWeight")
+    .innerText = weight;
+
+    document.getElementById("pilotImage")
+    .src = image;
+
+    document.getElementById("pilotModal")
+    .style.display = "flex";
+}
+
+function closePilot(){
+
+    document.getElementById("pilotModal")
+    .style.display = "none";
+}
+
+window.onclick = function(e){
+
+    const modal =
+    document.getElementById("pilotModal");
+
+    if(e.target === modal){
+
+        modal.style.display = "none";
+    }
+}
+
+/* IA ENANITO */
+
+const assistantMessages = [
+
+"🏎 Verstappen marca vuelta rápida.",
+
+"🛞 Ferrari prepara pit stop.",
+
+"📡 DRS habilitado.",
+
+"🚨 Posible Safety Car.",
+
+"🌧 Probabilidad de lluvia.",
+
+"🔥 McLaren aumenta ritmo.",
+
+"📻 Team Radio: Push Push Push!",
+
+"🏁 Últimas vueltas del GP.",
+
+"🧠 IA calculando estrategias."
+
+];
+
+const bubble =
+document.getElementById("assistantBubble");
+
+setInterval(()=>{
+
+    const randomMessage =
+
+    assistantMessages[
+    Math.floor(
+    Math.random() *
+    assistantMessages.length
+    )
+    ];
+
+    bubble.innerHTML = randomMessage;
+
+},4000);
+
+document
+.getElementById("assistantCharacter")
+.addEventListener("click",()=>{
+
+    bubble.innerHTML =
+    "🤖 Hola jefe. Todos los sistemas F1 funcionan correctamente.";
+
+});
+
+/* DYNAMIC DATA */
+
+setInterval(()=>{
+
+    const temp =
+    28 + Math.floor(Math.random()*10);
+
+    const fuel =
+    40 + Math.floor(Math.random()*60);
+
+    const tyres =
+    ["SOFT","MEDIUM","HARD"];
+
+    document.getElementById("temp")
+    .innerText = temp + "°C";
+
+    document.getElementById("fuel")
+    .innerText = fuel + "%";
+
+    document.getElementById("tyres")
+    .innerText =
+    tyres[Math.floor(Math.random()*3)];
+
+},3000);
+
+</script>
+
+</body>
+</html>

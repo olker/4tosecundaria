@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capitán Lara</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#111827;
+}
+
+header{
+    background:#7e22ce;
+    color:white;
+    text-align:center;
+    padding:25px;
+    animation:entrada 1s ease;
+}
+
+nav{
+    background:#9333ea;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    padding:15px;
+}
+
+nav button{
+    background:#f3e8ff;
+    color:#7e22ce;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+nav button:hover{
+    background:#ddd6fe;
+    transform:scale(1.1);
+}
+
+nav button:active{
+    transform:scale(0.9);
+}
+
+section{
+    display:none;
+    padding:40px;
+    text-align:center;
+    color:white;
+    animation:fade 0.5s ease;
+}
+
+.active{
+    display:block;
+}
+
+.galeria{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.galeria img{
+    width:260px;
+    height:300px;
+    object-fit:cover;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    transition:0.4s;
+}
+
+.galeria img:hover{
+    transform:scale(1.08) rotate(2deg);
+    box-shadow:0 8px 20px rgba(0,0,0,0.8);
+}
+
+.productos{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.producto{
+    background:#1f2937;
+    padding:20px;
+    width:220px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    color:white;
+    transition:0.4s;
+}
+
+.producto:hover{
+    transform:translateY(-10px);
+}
+
+.producto img{
+    width:100%;
+    height:160px;
+    object-fit:cover;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.producto button{
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    background:#7e22ce;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.producto button:hover{
+    background:#6b21a8;
+    transform:scale(1.1);
+}
+
+.producto button:active{
+    transform:scale(0.9);
+}
+
+.mapa{
+    background:#1f2937;
+    max-width:700px;
+    margin:auto;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    font-size:22px;
+    color:white;
+    transition:0.4s;
+}
+
+.mapa:hover{
+    transform:scale(1.03);
+}
+
+ul{
+    list-style:none;
+    margin-top:20px;
+}
+
+li{
+    background:#1f2937;
+    color:white;
+    margin:10px auto;
+    padding:15px;
+    max-width:400px;
+    border-radius:10px;
+    animation:fade 0.5s ease;
+}
+
+.borrar-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.borrar-btn:hover{
+    background:#ef4444;
+    transform:scale(1.1);
+}
+
+.borrar-btn:active{
+    transform:scale(0.9);
+}
+
+footer{
+    background:#7e22ce;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes entrada{
+    from{
+        opacity:0;
+        transform:translateY(-30px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚓ Capitán Lara ⚓</h1>
+</header>
+
+<nav>
+    <button onclick="mostrar('p1')">📸</button>
+    <button onclick="mostrar('p2')">🛒</button>
+    <button onclick="mostrar('p3')">📍</button>
+    <button onclick="mostrar('p4')">🧺</button>
+</nav>
+
+<section id="p1" class="active">
+
+    <h2>📸 Galería</h2>
+    <br>
+
+    <div class="galeria">
+
+        <img src="img.jpg" alt="Capitán Lara">
+
+        <img src="image1.png" alt="Capitán Lara">
+
+        <img src="image2.png" alt="Capitán Lara">
+
+    </div>
+
+</section>
+
+<section id="p2">
+
+    <h2>🛒 Productos</h2>
+    <br>
+
+    <div class="productos">
+
+        <div class="producto">
+            <img src="lara1.png" alt="Capitán Lara Clásico">
+            <h3>Capitán Lara Clásico</h3>
+            <p>$10</p>
+            <button onclick="agregar('Capitán Lara Clásico')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara2.png" alt="Capitán Lara Dorado">
+            <h3>Capitán Lara Dorado</h3>
+            <p>$20</p>
+            <button onclick="agregar('Capitán Lara Dorado')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara3.png" alt="Capitán Lara Marino">
+            <h3>Capitán Lara Marino</h3>
+            <p>$15</p>
+            <button onclick="agregar('Capitán Lara Marino')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara4.png" alt="Espada de Lara">
+            <h3>Espada de Lara</h3>
+            <p>$25</p>
+            <button onclick="agregar('Espada de Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara5.png" alt="Sombrero de Lara">
+            <h3>Sombrero de Lara</h3>
+            <p>$18</p>
+            <button onclick="agregar('Sombrero de Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara6.png" alt="Brújula de Lara">
+            <h3>Brújula de Lara</h3>
+            <p>$30</p>
+            <button onclick="agregar('Brújula de Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara7.png" alt="Mapa del Capitán Lara">
+            <h3>Mapa del Capitán Lara</h3>
+            <p>$12</p>
+            <button onclick="agregar('Mapa del Capitán Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara8.png" alt="Ancla de Lara">
+            <h3>Ancla de Lara</h3>
+            <p>$40</p>
+            <button onclick="agregar('Ancla de Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara9.png" alt="Cañón de Lara">
+            <h3>Cañón de Lara</h3>
+            <p>$35</p>
+            <button onclick="agregar('Cañón de Lara')">
+                Agregar
+            </button>
+        </div>
+
+        <div class="producto">
+            <img src="lara10.png" alt="Bandera del Capitán Lara">
+            <h3>Bandera del Capitán Lara</h3>
+            <p>$14</p>
+            <button onclick="agregar('Bandera del Capitán Lara')">
+                Agregar
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="p3">
+
+    <div class="mapa">
+
+        <h2>📍 Ubicación</h2>
+
+        <br>
+
+        <p>Avenida Panamericana</p>
+
+        <p>y Calle Manuel Rodríguez</p>
+
+    </div>
+
+</section>
+
+<section id="p4">
+
+    <h2>🧺 Carrito</h2>
+
+    <br>
+
+    <button onclick="borrarCarrito()" class="borrar-btn">
+        🗑️ Borrar Objetos
+    </button>
+
+    <br><br>
+
+    <ul id="lista">
+
+        <li>Tu carrito está vacío</li>
+
+    </ul>
+
+</section>
+
+<footer>
+
+    <p>Capitán Lara © 2026</p>
+
+</footer>
+
+<script>
+
+function mostrar(id){
+
+    let secciones = document.querySelectorAll("section");
+
+    secciones.forEach(sec => {
+
+        sec.classList.remove("active");
+
+    });
+
+    document.getElementById(id).classList.add("active");
+}
+
+let carrito = [];
+
+function agregar(producto){
+
+    carrito.push(producto);
+
+    let lista = document.getElementById("lista");
+
+    lista.innerHTML = "";
+
+    carrito.forEach(item => {
+
+        let li = document.createElement("li");
+
+        li.textContent = item;
+
+        lista.appendChild(li);
+
+    });
+
+}
+
+function borrarCarrito(){
+
+    carrito = [];
+
+    let lista = document.getElementById("lista");
+
+    lista.innerHTML = "<li>Tu carrito está vacío</li>";
+
+}
+
+</script>
+
+</body>
+</html>
